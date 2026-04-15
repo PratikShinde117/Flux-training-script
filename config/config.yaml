@@ -1,0 +1,132 @@
+job: extension
+
+config:
+  name: "flux-mughal-lora-v1"
+
+  process:
+    - type: sd_trainer
+      training_folder: /teamspace/studios/this_studio/output
+
+      device: cuda:0
+
+      network:
+        type: lora
+        linear: 16
+        linear_alpha: 16
+
+      save:
+        dtype: float16
+        save_every: 250
+        max_step_saves_to_keep: 4
+        push_to_hub: false
+
+      datasets:
+        - folder_path: /teamspace/studios/this_studio/dataset/mughal_final_train
+          caption_ext: text
+          caption_dropout_rate: 0.05
+          shuffle_tokens: false
+          cache_latents_to_disk: true
+          resolution: [512, 768]
+
+      train:
+        batch_size: 1
+        steps: 2000
+        gradient_accumulation_steps: 1
+
+        train_unet: true
+        train_text_encoder: false
+
+        gradient_checkpointing: true
+        noise_scheduler: flowmatch
+        optimizer: adamw8bit
+        lr: 1e-4
+
+        ema_config:
+          use_ema: true
+          ema_decay: 0.99
+
+        dtype: bf16
+
+      model:
+        name_or_path: black-forest-labs/FLUX.1-dev
+        is_flux: true
+        quantize: true
+
+      sample:
+        sampler: flowmatch
+        sample_every: 250
+        width: 768
+        height: 768
+
+        prompts:
+          - Mughal miniature painting, emperor in royal court, intricate details, gold and mineral pigments
+          - Ragamala painting, Indian classical miniature style, vibrant colors
+
+        neg: ""
+        seed: 42
+        walk_seed: true
+        guidance_scale: 4
+        sample_steps: 20
+
+meta:
+  name: flux-mughal-lora
+  version: "1.0"
+
+
+
+
+
+# job: extension
+
+# config:
+#   name: flux-mughal-training
+
+#   process:
+#     - type: sd_trainer
+#       training_folder: /teamspace/studios/this_studio/output
+
+#       device: cuda
+
+#       model:
+#         name_or_path: black-forest-labs/FLUX.1-dev
+#         is_flux: true
+#         low_cpu_mem_usage: true
+
+#       network:
+#         type: lora
+#         linear: 4
+#         linear_alpha: 4
+
+#       save:
+#         dtype: float16
+#         save_every: 200
+#         max_step_saves_to_keep: 2
+
+#       datasets:
+#         - folder_path: /teamspace/studios/this_studio/dataset/mughal_final_train
+#           caption_ext: txt
+#           resolution: 384
+
+#       train:
+#         batch_size: 1
+#         steps: 1000
+#         lr: 1e-4
+#         gradient_accumulation_steps: 1
+#         train_unet: false
+#         train_text_encoder: false
+#         mixed_precision: fp16
+#         gradient_checkpointing: true
+
+#       sample:
+#         sampler: euler
+#         sample_every: 200
+#         width: 384
+#         height: 384
+#         prompts:
+#           - "Mughal miniature painting, royal court scene"
+#           - "Ragamala painting, Indian classical style"
+
+# meta:
+#   name: flux-ai-toolkit
+
+
