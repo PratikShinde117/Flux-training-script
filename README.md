@@ -53,7 +53,7 @@ mughal-flux-lora/
 ├── notebooks/
 │   └── flux_training_pipeline.ipynb
 │
-├── samples/
+├── sample_generated_images/
 │   ├── sample1.png
 │   ├── sample2.png
 │   └── ...
